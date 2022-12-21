@@ -1,25 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends React.Component {
+    state = {
+        otp: "",
+    };
+
+    componentDidMount() {
+        if ("OTPCredential" in window) {
+            const ac = new AbortController();
+
+            navigator.credentials
+                .get({
+                    otp: { transport: ["sms"] },
+                    signal: ac.signal,
+                })
+                .then((otp) => {
+                    this.setState({ otp: otp.code });
+                    ac.abort();
+                })
+                .catch((err) => {
+                    ac.abort();
+                    console.log(err);
+                });
+        }
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <input type="text" autocomplete="one-time-code"/>
+                <br />
+                <br />
+                <br />
+                <br />
+                <h2>Your OTP is: {this.state.otp}</h2>
+                <br />
+                <br />
+                <br />
+                <br />
+                <h3>The Web OTP API Docs</h3>
+                <div>
+                    Send an SMS that includes
+                    <pre>
+            <code>@web-otp-shravan.netlify.app #12345</code>
+          </pre>
+                    at the last line to this phone.
+                    <pre>
+            <code>please don't use https:// and / end of the url</code>
+          </pre>
+                    <pre style={{ color: "green" }}>
+            <code>example for use @www.google.com</code>
+          </pre>
+                    <pre style={{ color: "red" }}>
+            <code>example for not use XXXXX @https://www.google.com XXXXX</code>
+          </pre>
+                </div>
+            </div>
+        );
+    }
 }
-
-export default App;
