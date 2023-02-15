@@ -1,9 +1,10 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
+import OtpInput from "./OTPInput";
 
 const App = () => {
 
-    const [otp, setOTP] = useState('')
-    const inputRef = useRef()
+    const [otp, setOtp] = useState('');
+    const onChange = (value) => setOtp(value);
 
 
     useEffect(() => {
@@ -16,7 +17,7 @@ const App = () => {
                     signal: ac.signal,
                 })
                 .then((otp) => {
-                    inputRef.current.value = otp.code
+                    setOtp(otp.code)
                     ac.abort();
                 })
                 .catch((err) => {
@@ -26,39 +27,10 @@ const App = () => {
         }
     }, [])
 
-    useEffect(() => {
-        alert(otp)
-    }, [otp])
 
     return (
-        <div className="App">
-            <input type="text" autocomplete="one-time-code" ref={inputRef} onChange={() => setOTP(inputRef.current.value)}/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <h2>Your OTP is: {otp}</h2>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <h3>The Web OTP API Docs</h3>
-            <div>
-                Send an SMS that includes
-                <pre>
-            <code>@web-otp-shravan.netlify.app #12345</code>
-          </pre>
-                at the last line to this phone.
-                <pre>
-            <code>please don't use https:// and / end of the url</code>
-          </pre>
-                <pre style={{color: "green"}}>
-            <code>example for use @www.google.com</code>
-          </pre>
-                <pre style={{color: "red"}}>
-            <code>example for not use XXXXX @https://www.google.com XXXXX</code>
-          </pre>
-            </div>
+        <div className="App" style={{display: 'flex', marginTop: '100px', marginLeft: 10}}>
+            <OtpInput value={otp} valueLength={6} onChange={onChange}/>
         </div>
     );
 }
